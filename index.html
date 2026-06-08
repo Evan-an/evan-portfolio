@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evan Pan — Visual Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Noto+Serif+SC:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="preload" href="Evan-logo.png" as="image">
+<meta name="description" content="Evan Pan 潘文龙 — 视觉设计师作品集。专注于品牌视觉设计、海报创意与动态视觉。">
+<style>
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-tertiary: #1a1a1a;
+  --text-primary: #f0ece4;
+  --text-secondary: #a09a8e;
+  --text-muted: #6b6560;
+  --accent-red: #4caf50;
+  --accent-gold: #81c784;
+  --accent-cream: #e8f5e9;
+  --border-color: rgba(240,236,228,0.08);
+  --border-accent: rgba(76,175,80,0.3);
+  --font-display-en: 'Playfair Display', serif;
+  --font-display-cn: 'Noto Serif SC', serif;
+  --font-body-en: 'Space Grotesk', sans-serif;
+  --font-body-cn: 'Noto Sans SC', sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--accent-red) var(--bg-primary); }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body-cn);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Custom cursor */
+.cursor-dot {
+  position: fixed; width: 6px; height: 6px;
+  background: var(--accent-red); border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transition: transform 0.08s ease-out, opacity 0.3s ease;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1.5px solid var(--accent-gold); border-radius: 50%;
+  pointer-events: none; z-index: 99998;
+  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+.cursor-ring.hover { width: 56px; height: 56px; border-color: var(--accent-red); }
+.cursor-dot.click { transform: scale(2.5); }
+.cursor-ring.click { width: 48px; height: 48px; border-color: var(--accent-red); }
+
+/* Noise */
+.noise-overlay {
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat; background-size: 256px 256px;
+}
+
+/* Preloader */
+.preloader {
+  position: fixed; inset: 0; z-index: 100000;
+  background: var(--bg-primary);
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+.preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.preloader-text {
+  font-family: var(--font-display-en); font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900; letter-spacing: -0.02em; overflow: hidden;
+}
+.preloader-text span { display: inline-block; transform: translateY(100%); animation: slideUp 0.6s var(--ease-out-expo) forwards; }
+@keyframes slideUp { to { transform: translateY(0); } }
+.preloader-bar { width: 120px; height: 2px; background: var(--border-color); position: relative; overflow: hidden; }
+.preloader-bar::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--accent-red); animation: loadBar 1.8s var(--ease-out-quart) forwards; }
+@keyframes loadBar { to { width: 100%; } }
+
+/* Navigation */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 24px 48px; display: flex; justify-content: space-between; align-items: center;
+  mix-blend-mode: difference;
+}
+.nav-logo {
+  font-family: var(--font-display-en); font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-primary); text-decoration: none;
+}
+.nav-logo .cn { font-family: var(--font-display-cn); font-size: 0.85rem; font-weight: 400; margin-left: 8px; opacity: 0.6; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  font-family: var(--font-body-en); font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-primary);
+  text-decoration: none; position: relative; padding-bottom: 4px;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
+  background: var(--accent-red); transition: width 0.4s var(--ease-out-expo);
+}
+.nav-links a:hover::after { width: 100%; }
+
+.nav-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; padding: 8px; z-index: 1001; }
+.nav-toggle span { display: block; width: 28px; height: 1.5px; background: var(--text-primary); transition: transform 0.4s var(--ease-out-expo), opacity 0.3s ease; }
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* Hero */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 48px 80px; position: relative; overflow: hidden;
+}
+.hero-bg-video {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.hero-bg-noise {
+  position: absolute; inset: 0; z-index: 1;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  pointer-events: none;
+}
+.hero-bg-lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.hero-bg-lines .line {
+  position: absolute; width: 1px; height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--border-color), transparent);
+  animation: lineFloat 8s ease-in-out infinite;
+}
+.hero-bg-lines .line:nth-child(1) { left: 15%; animation-delay: 0s; }
+.hero-bg-lines .line:nth-child(2) { left: 35%; animation-delay: 2s; }
+.hero-bg-lines .line:nth-child(3) { left: 55%; animation-delay: 4s; }
+.hero-bg-lines .line:nth-child(4) { left: 75%; animation-delay: 1s; }
+.hero-bg-lines .line:nth-child(5) { left: 90%; animation-delay: 3s; }
+@keyframes lineFloat { 0%, 100% { opacity: 0.3; transform: translateY(-10px); } 50% { opacity: 0.8; transform: translateY(10px); } }
+
+.hero-content { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; }
+.hero-label {
+  font-family: var(--font-body-en); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent-gold);
+  margin-bottom: 32px; opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s var(--ease-out-expo) 2s forwards;
+}
+.hero-name { display: flex; flex-direction: column; gap: 0; margin-bottom: 40px; }
+.hero-name .line-cn {
+  font-family: var(--font-display-cn); font-size: clamp(3.5rem, 10vw, 9rem);
+  font-weight: 900; line-height: 1.05; letter-spacing: -0.02em;
+  opacity: 0; transform: translateY(60px); animation: heroReveal 1s var(--ease-out-expo) 2.1s forwards;
+  cursor: default;
+  display: inline-block;
+  position: relative;
+}
+.hero-name .line-cn .char {
+  display: inline-block;
+  position: relative;
+  color: var(--text-primary);
+  transition: transform 0.1s ease;
+}
+.hero-name .line-cn .char::before,
+.hero-name .line-cn .char::after {
+  content: attr(data-char);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.hero-name .line-cn .char::before {
+  color: var(--accent-red);
+  clip-path: inset(0 0 60% 0);
+}
+.hero-name .line-cn .char::after {
+  color: var(--accent-gold);
+  clip-path: inset(60% 0 0 0);
+}
+.hero-name .line-cn.glitch .char::before {
+  opacity: 0.8;
+  animation: glitchTop 0.3s steps(2) forwards;
+}
+.hero-name .line-cn.glitch .char::after {
+  opacity: 0.8;
+  animation: glitchBottom 0.3s steps(2) forwards;
+}
+@keyframes glitchTop {
+  0% { transform: translate(0); }
+  25% { transform: translate(-3px, -2px); }
+  50% { transform: translate(3px, 1px); }
+  75% { transform: translate(-1px, -1px); }
+  100% { transform: translate(0); opacity: 0; }
+}
+@keyframes glitchBottom {
+  0% { transform: translate(0); }
+  25% { transform: translate(3px, 2px); }
+  50% { transform: translate(-3px, -1px); }
+  75% { transform: translate(1px, 1px); }
+  100% { transform: translate(0); opacity: 0; }
+}
+.hero-name .line-en {
+  font-family: var(--font-display-en); font-size: clamp(2rem, 5vw, 5rem);
+  font-weight: 400; font-style: italic; line-height: 1.1; color: var(--text-secondary);
+  opacity: 0; transform: translateY(40px); animation: heroReveal 1s var(--ease-out-expo) 2.3s forwards;
+}
+.hero-name .line-en em { color: var(--accent-red); font-style: italic; }
+@keyframes heroReveal { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+.hero-role {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s var(--ease-out-expo) 2.5s forwards;
+}
+.hero-role .tag {
+  font-family: var(--font-body-en); font-size: 0.8rem; font-weight: 400;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-secondary);
+  padding: 8px 20px; border: 1px solid var(--border-color);
+  transition: all 0.4s var(--ease-out-expo);
+}
+.hero-role .tag:hover {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+  transform: translateY(-2px);
+}
+.hero-role .divider { width: 40px; height: 1px; background: var(--accent-red); }
+
+.hero-scroll-hint {
+  position: absolute; bottom: 40px; right: 48px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  opacity: 0; animation: fadeInUp 0.8s var(--ease-out-expo) 2.8s forwards;
+}
+.hero-scroll-hint span {
+  font-family: var(--font-body-en); font-size: 0.65rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-muted); writing-mode: vertical-rl;
+}
+.hero-scroll-hint .scroll-line {
+  width: 1px; height: 60px; background: linear-gradient(to bottom, var(--accent-red), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%, 100% { transform: scaleY(1); opacity: 1; } 50% { transform: scaleY(0.5); opacity: 0.3; } }
+
+/* Section Common */
+.section { padding: 120px 48px; position: relative; }
+.section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 80px; gap: 40px; }
+.section-number {
+  font-family: var(--font-display-en); font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 900; line-height: 1; color: transparent; -webkit-text-stroke: 1px var(--border-color); flex-shrink: 0;
+}
+.section-title-group { flex: 1; }
+.section-title { font-family: var(--font-display-cn); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+.section-title-en { font-family: var(--font-display-en); font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 400; font-style: italic; color: var(--text-muted); }
+
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo); }
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(60px); transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo); }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+.reveal-scale { opacity: 0; transform: scale(0.9); transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo); }
+.reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+/* About */
+.about { background: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1400px; margin: 0 auto; align-items: start; }
+.about-text p { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 2; color: var(--text-secondary); margin-bottom: 24px; }
+.about-text p .highlight { color: var(--accent-gold); font-weight: 500; }
+.about-info { display: flex; flex-direction: column; gap: 32px; }
+.about-info-item { padding-bottom: 32px; border-bottom: 1px solid var(--border-color); }
+.about-info-item .label { font-family: var(--font-body-en); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.about-info-item .value { font-family: var(--font-display-cn); font-size: 1.1rem; color: var(--text-primary); }
+.about-info-item .value a { color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color); transition: border-color 0.3s ease; }
+.about-info-item .value a:hover { border-color: var(--accent-red); }
+.skills-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.skill-tag {
+  font-family: var(--font-body-en); font-size: 0.75rem; font-weight: 400;
+  letter-spacing: 0.05em; padding: 6px 16px; border: 1px solid var(--border-color);
+  color: var(--text-secondary); transition: all 0.3s ease;
+}
+.skill-tag:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+/* Works Grid */
+.works { max-width: 1600px; margin: 0 auto; }
+.works-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+.work-item {
+  position: relative; overflow: hidden; cursor: pointer;
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.5s var(--ease-out-expo);
+  min-height: 220px;
+}
+/* Corner brackets */
+.work-item .corner {
+  position: absolute;
+  width: 16px; height: 16px;
+  border-color: rgba(76,175,80,0.5);
+  border-style: solid;
+  pointer-events: none;
+  transition: all 0.4s var(--ease-out-expo);
+  z-index: 2;
+}
+.work-item .corner.tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.work-item .corner.tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+.work-item .corner.bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.work-item .corner.br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+.work-item:hover .corner {
+  width: 28px; height: 28px;
+  border-color: #4caf50;
+}
+/* Border frame */
+.work-item .frame {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(76,175,80,0.15);
+  pointer-events: none;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  z-index: 1;
+}
+.work-item:hover .frame {
+  border-color: rgba(76,175,80,0.4);
+  box-shadow: inset 0 0 30px rgba(76,175,80,0.06);
+}
+/* Diagonal line decoration */
+.work-item .diag-line {
+  position: absolute;
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(76,175,80,0.3), transparent);
+  transform: rotate(-45deg);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+.work-item .diag-line.d1 { top: 20%; left: -10px; }
+.work-item .diag-line.d2 { bottom: 20%; right: -10px; }
+/* Scan sweep */
+.work-item .scanline {
+  position: absolute;
+  top: 0; left: -100%;
+  width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(76,175,80,0.1), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 2;
+  transition: none;
+}
+.work-item:hover .scanline {
+  animation: scanSweep 1.2s var(--ease-out-expo) forwards;
+}
+@keyframes scanSweep {
+  0% { left: -60%; }
+  100% { left: 140%; }
+}
+.work-item:hover {
+  transform: translateY(-6px);
+}
+.work-card-content {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 32px; gap: 10px;
+  position: relative;
+  z-index: 3;
+}
+.work-card-num {
+  font-family: var(--font-display-en); font-size: 2.8rem; font-weight: 900;
+  color: rgba(76,175,80,0.15); line-height: 1;
+  letter-spacing: -0.02em;
+}
+.work-card-title {
+  font-family: var(--font-display-cn); font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  font-weight: 700; color: #e8f5e9; line-height: 1.3;
+}
+.work-card-title-en {
+  font-family: var(--font-display-en); font-size: 0.8rem; font-weight: 400;
+  letter-spacing: 0.08em;
+  color: rgba(165,214,167,0.5);
+}
+.work-card-tag {
+  font-family: var(--font-body-en); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: #4caf50; margin-top: 4px;
+}
+
+/* Project Detail */
+.project-section { padding: 0 48px 120px; max-width: 1600px; margin: 0 auto; }
+.project-hero { position: relative; width: 100%; height: 70vh; min-height: 500px; overflow: hidden; border-radius: 4px; margin-bottom: 60px; }
+.project-hero img { width: 100%; height: 100%; object-fit: cover; }
+.project-hero .project-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-primary) 0%, transparent 50%); }
+.project-info-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; gap: 40px; flex-wrap: wrap; }
+.project-info-bar .project-name { font-family: var(--font-display-cn); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900; line-height: 1.2; }
+.project-info-bar .project-name-en { font-family: var(--font-display-en); font-size: 1rem; font-style: italic; color: var(--text-muted); margin-top: 8px; }
+.project-meta { display: flex; gap: 48px; }
+.project-meta-item .meta-label { font-family: var(--font-body-en); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+.project-meta-item .meta-value { font-family: var(--font-body-cn); font-size: 0.95rem; color: var(--text-secondary); }
+.project-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.project-gallery .gallery-item { overflow: hidden; border-radius: 4px; }
+.project-gallery .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s var(--ease-out-expo); }
+.project-gallery .gallery-item:hover img { transform: scale(1.03); }
+.project-gallery .gallery-item.full-width { grid-column: 1 / -1; }
+
+/* Marquee */
+.marquee-section { padding: 60px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); overflow: hidden; }
+.marquee-track { display: flex; animation: marquee 20s linear infinite; white-space: nowrap; }
+.marquee-track span {
+  font-family: var(--font-display-en); font-size: clamp(3rem, 6vw, 5rem); font-weight: 900;
+  text-transform: uppercase; color: transparent; -webkit-text-stroke: 1px var(--border-color);
+  padding: 0 40px; flex-shrink: 0;
+}
+.marquee-track span .dot { display: inline-block; width: 12px; height: 12px; background: var(--accent-red); border-radius: 50%; margin: 0 40px; vertical-align: middle; -webkit-text-stroke: 0; }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* Contact */
+.contact { background: var(--bg-secondary); text-align: center; padding: 160px 48px; position: relative; overflow: hidden; }
+.contact::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(76,175,80,0.06) 0%, transparent 70%); pointer-events: none; }
+.contact-label { font-family: var(--font-body-en); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 32px; }
+.contact-heading { font-family: var(--font-display-cn); font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; line-height: 1.2; margin-bottom: 16px; }
+.contact-heading-en { font-family: var(--font-display-en); font-size: clamp(1.2rem, 2.5vw, 2rem); font-weight: 400; font-style: italic; color: var(--text-secondary); margin-bottom: 48px; }
+.contact-cta {
+  display: inline-flex; align-items: center; gap: 16px;
+  font-family: var(--font-body-en); font-size: 0.85rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-primary);
+  text-decoration: none; padding: 20px 48px; border: 1px solid var(--accent-red);
+  position: relative; overflow: hidden; transition: color 0.4s ease;
+}
+.contact-cta::before { content: ''; position: absolute; inset: 0; background: var(--accent-red); transform: scaleX(0); transform-origin: left; transition: transform 0.5s var(--ease-out-expo); }
+.contact-cta:hover::before { transform: scaleX(1); }
+.contact-cta:hover { color: var(--bg-primary); }
+.contact-cta span, .contact-cta svg { position: relative; z-index: 1; }
+.contact-cta svg { width: 18px; height: 18px; stroke: currentColor; transition: transform 0.3s ease; }
+.contact-cta:hover svg { transform: translateX(4px); }
+
+/* Footer */
+.footer { padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); }
+.footer-left { font-family: var(--font-body-en); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; }
+.footer-right { display: flex; gap: 24px; }
+.footer-right a { font-family: var(--font-body-en); font-size: 0.75rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.3s ease; }
+.footer-right a:hover { color: var(--accent-red); }
+
+/* Lightbox */
+.lightbox {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(10,10,10,0.95); backdrop-filter: blur(20px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+.lightbox.active { opacity: 1; visibility: visible; }
+.lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 4px; transform: scale(0.9); transition: transform 0.5s var(--ease-out-expo); }
+.lightbox.active img { transform: scale(1); }
+.lightbox-close {
+  position: absolute; top: 32px; right: 32px; width: 48px; height: 48px;
+  border: 1px solid var(--border-color); background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+}
+.lightbox-close:hover { border-color: var(--accent-red); }
+.lightbox-close svg { width: 20px; height: 20px; stroke: var(--text-primary); }
+
+/* Mobile Nav */
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 999; background: var(--bg-primary);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+  opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.mobile-nav.active { opacity: 1; visibility: visible; }
+.mobile-nav a { font-family: var(--font-display-cn); font-size: 2rem; font-weight: 700; color: var(--text-primary); text-decoration: none; transition: color 0.3s ease; }
+.mobile-nav a:hover { color: var(--accent-red); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .nav { padding: 20px 24px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  .hero { padding: 100px 24px 60px; }
+  .section { padding: 80px 24px; }
+  .project-section { padding: 0 24px 80px; }
+  .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .works-grid { grid-template-columns: repeat(3, 1fr); }
+  .project-gallery { grid-template-columns: 1fr; }
+  .contact { padding: 100px 24px; }
+  .footer { padding: 32px 24px; flex-direction: column; gap: 16px; }
+  .cursor-dot, .cursor-ring { display: none; }
+}
+@media (max-width: 640px) {
+  .works-grid { grid-template-columns: repeat(2, 1fr); }
+  .project-meta { flex-direction: column; gap: 24px; }
+  .section-header { flex-direction: column; align-items: flex-start; margin-bottom: 48px; }
+}
+
+/* Stagger */
+.stagger-children > * { opacity: 0; transform: translateY(30px); transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+.stagger-children.visible > *:nth-child(1) { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(2) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(3) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(4) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(5) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(6) { transition-delay: 0.5s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(7) { transition-delay: 0.6s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(8) { transition-delay: 0.7s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(9) { transition-delay: 0.8s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(10) { transition-delay: 0.9s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(11) { transition-delay: 1.0s; opacity: 1; transform: translateY(0); }
+.stagger-children.visible > *:nth-child(12) { transition-delay: 1.1s; opacity: 1; transform: translateY(0); }
+/* ═══ Live Stream Timeline Layout ═══ */
+.timeline {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--accent-red), transparent);
+  transform: translateX(-50%);
+}
+.timeline-item {
+  position: relative;
+  width: 50%;
+  padding: 20px 40px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
+}
+.timeline-item.hidden {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.timeline-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.timeline-item:nth-child(odd) { left: 0; text-align: right; }
+.timeline-item:nth-child(even) { left: 50%; text-align: left; }
+.timeline-item:nth-child(odd) .timeline-content { margin-right: 0; margin-left: auto; }
+.timeline-item:nth-child(even) .timeline-content { margin-left: 0; margin-right: auto; }
+
+.timeline-dot {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  background: var(--accent-red);
+  border: 3px solid var(--bg-primary);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.timeline-item:nth-child(odd) .timeline-dot { right: -8px; }
+.timeline-item:nth-child(even) .timeline-dot { left: -8px; }
+.timeline-item:hover .timeline-dot {
+  transform: translateY(-50%) scale(1.4);
+  box-shadow: 0 0 20px rgba(76,175,80,0.5);
+}
+
+.timeline-content {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.4s ease;
+}
+.timeline-content:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(76,175,80,0.25);
+}
+.timeline-content img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+.timeline-content:hover img { transform: scale(1.05); }
+
+.timeline-date {
+  font-family: var(--font-display-en);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+.timeline-title {
+  font-family: var(--font-display-cn);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+  .timeline::before { left: 20px; }
+  .timeline-item { width: 100%; left: 0 !important; padding-left: 60px; padding-right: 20px; text-align: left !important; }
+  .timeline-item:nth-child(odd) .timeline-content { margin-left: 0; margin-right: auto; }
+  .timeline-item .timeline-dot { left: 12px !important; right: auto !important; }
+}
+/* ═══ Live Stream 3-Column Grid with Tilt ═══ */
+.livestream-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.livestream-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 4/3;
+  transform-style: preserve-3d;
+  perspective: 800px;
+  transition: transform 0.15s ease-out, box-shadow 0.4s ease;
+  will-change: transform;
+}
+.livestream-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s var(--ease-out-expo), filter 0.4s ease;
+}
+.livestream-item:hover {
+  z-index: 10;
+  box-shadow: 0 20px 50px rgba(76,175,80,0.3);
+}
+.livestream-item:hover img {
+  transform: scale(1.08);
+  filter: brightness(0.7);
+}
+.ls-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.livestream-item:hover .ls-overlay { opacity: 1; }
+.ls-overlay span {
+  font-family: var(--font-display-en);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  transform: translateZ(40px) scale(0.8);
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.livestream-item:hover .ls-overlay span {
+  transform: translateZ(40px) scale(1);
+}
+
+@media (max-width: 1024px) {
+  .livestream-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .livestream-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ Smooth Section Transitions ═══ */
+.section, .project-section {
+  transition: opacity 0.6s var(--ease-out-expo);
+}
+
+/* ═══ Gallery Item Enhanced Hover ═══ */
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(76,175,80,0.2), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.gallery-item:hover::after { opacity: 1; }
+/* ═══ Green Cross Decorations ═══ */
+.green-decor {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.green-cross {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  animation: crossFade 8s ease-in-out infinite;
+}
+.green-cross::before, .green-cross::after {
+  content: '';
+  position: absolute;
+  background: rgba(76, 175, 80, 0.5);
+  border-radius: 1px;
+}
+.green-cross::before {
+  width: 100%;
+  height: 1.5px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.green-cross::after {
+  width: 1.5px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+.green-cross:nth-child(1) { top: 10%; left: 6%; animation-delay: 0s; transform: rotate(15deg); }
+.green-cross:nth-child(2) { top: 22%; left: 94%; animation-delay: 2s; transform: rotate(-10deg); width: 10px; height: 10px; }
+.green-cross:nth-child(3) { top: 40%; left: 3%; animation-delay: 4s; transform: rotate(25deg); }
+.green-cross:nth-child(4) { top: 55%; left: 90%; animation-delay: 1s; transform: rotate(-20deg); width: 8px; height: 8px; }
+.green-cross:nth-child(5) { top: 75%; left: 12%; animation-delay: 3s; transform: rotate(5deg); width: 10px; height: 10px; }
+.green-cross:nth-child(6) { top: 88%; left: 85%; animation-delay: 5s; transform: rotate(-15deg); }
+.green-cross:nth-child(7) { top: 15%; left: 45%; animation-delay: 6s; transform: rotate(30deg); width: 8px; height: 8px; }
+.green-cross:nth-child(8) { top: 65%; left: 55%; animation-delay: 1.5s; transform: rotate(-25deg); }
+.green-cross:nth-child(9) { top: 30%; left: 75%; animation-delay: 3.5s; transform: rotate(10deg); width: 12px; height: 12px; }
+.green-cross:nth-child(10) { top: 82%; left: 38%; animation-delay: 7s; transform: rotate(-5deg); width: 10px; height: 10px; }
+
+@keyframes crossFade {
+  0%, 100% { opacity: 0; transform: rotate(var(--r, 0deg)) scale(0.8); }
+  20% { opacity: 0.6; }
+  50% { opacity: 0.35; transform: rotate(var(--r, 0deg)) scale(1); }
+  80% { opacity: 0.5; }
+}
+/* ═══ Aurora Background Effect ═══ */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.12;
+  animation: auroraDrift 12s ease-in-out infinite alternate;
+}
+.aurora-blob:nth-child(1) {
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(76,175,80,0.6), rgba(76,175,80,0) 70%);
+  top: -10%; left: -5%;
+  animation-duration: 14s;
+}
+.aurora-blob:nth-child(2) {
+  width: 500px; height: 250px;
+  background: radial-gradient(ellipse, rgba(129,199,132,0.5), rgba(129,199,132,0) 70%);
+  top: 30%; right: -10%;
+  animation-duration: 18s;
+  animation-delay: -4s;
+}
+.aurora-blob:nth-child(3) {
+  width: 700px; height: 350px;
+  background: radial-gradient(ellipse, rgba(56,142,60,0.4), rgba(56,142,60,0) 70%);
+  bottom: 10%; left: 20%;
+  animation-duration: 16s;
+  animation-delay: -8s;
+}
+.aurora-blob:nth-child(4) {
+  width: 400px; height: 200px;
+  background: radial-gradient(ellipse, rgba(200,230,201,0.4), rgba(200,230,201,0) 70%);
+  top: 60%; right: 15%;
+  animation-duration: 20s;
+  animation-delay: -2s;
+}
+@keyframes auroraDrift {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33% { transform: translate(80px, 40px) rotate(15deg) scale(1.1); }
+  66% { transform: translate(-40px, -30px) rotate(-10deg) scale(0.95); }
+  100% { transform: translate(60px, 20px) rotate(8deg) scale(1.05); }
+}
+</style>
+</head>
+<body>
+
+<div class="aurora">
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+</div>
+
+<div class="noise-overlay"></div>
+<div class="green-decor">
+  <div class="green-cross"></div><div class="green-cross"></div><div class="green-cross"></div>
+  <div class="green-cross"></div><div class="green-cross"></div><div class="green-cross"></div>
+  <div class="green-cross"></div><div class="green-cross"></div><div class="green-cross"></div>
+  <div class="green-cross"></div>
+</div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="preloader" id="preloader">
+  <div class="preloader-text">
+    <span style="animation-delay:0.1s">E</span><span style="animation-delay:0.15s">V</span><span style="animation-delay:0.2s">A</span><span style="animation-delay:0.25s">N</span>
+  </div>
+  <div class="preloader-bar"></div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  </button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#about" onclick="closeMobileNav()">关于 / About</a>
+  <a href="#works" onclick="closeMobileNav()">作品 / Works</a>
+  <a href="#project-tea" onclick="closeMobileNav()">茶企海报 / Tea Brand</a>
+  <a href="#project-solar" onclick="closeMobileNav()">节气海报 / Solar Terms</a>
+  <a href="#project-materials" onclick="closeMobileNav()">物料设计 / Materials</a>
+  <a href="#project-livestream" onclick="closeMobileNav()">直播设计 / Live Stream</a>
+  <a href="#project-more" onclick="closeMobileNav()">其他 / Others</a>
+  <a href="#contact" onclick="closeMobileNav()">联系 / Contact</a>
+</nav>
+
+<nav class="nav">
+  <a href="#" class="nav-logo">EVAN<img src="Evan-logo.png" alt="Logo" style="height:20px;margin-left:8px;vertical-align:middle;"></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#works">Works</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <video class="hero-bg-video" autoplay muted loop playsinline>
+    <source src="grainient-bg.webm" type="video/webm">
+  </video>
+  <div class="hero-bg-noise"></div>
+  <div class="hero-bg-lines"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+  <div class="hero-content">
+    <div class="hero-label">Visual Designer / 视觉设计师</div>
+    <div class="hero-name">
+      <div class="line-cn" id="heroName"><span class="char" data-char="潘">潘</span><span class="char" data-char="文">文</span><span class="char" data-char="龙">龙</span></div>
+      <div class="line-en"><em>Evan</em> Pan</div>
+    </div>
+    <div class="hero-role">
+      <span class="tag">Brand Design</span>
+      <div class="divider"></div>
+      <span class="tag">Visual Identity</span>
+      <div class="divider"></div>
+      <span class="tag">Motion Graphics</span>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span>BRAND IDENTITY <span class="dot"></span> VISUAL DESIGN <span class="dot"></span> POSTER DESIGN <span class="dot"></span> MOTION GRAPHICS <span class="dot"></span> IP DESIGN <span class="dot"></span> E-COMMERCE <span class="dot"></span></span>
+    <span>BRAND IDENTITY <span class="dot"></span> VISUAL DESIGN <span class="dot"></span> POSTER DESIGN <span class="dot"></span> MOTION GRAPHICS <span class="dot"></span> IP DESIGN <span class="dot"></span> E-COMMERCE <span class="dot"></span></span>
+  </div>
+</div>
+
+<section class="section about" id="about">
+  <div class="section-header reveal">
+    <div class="section-number">01</div>
+    <div class="section-title-group">
+      <div class="section-title">关于我 / About</div>
+      <div class="section-title-en">The story behind the design</div>
+    </div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal stagger-children">
+      <p>我是一名视觉设计师，专注于<span class="highlight">品牌视觉设计</span>、<span class="highlight">海报创意</span>与<span class="highlight">动态视觉</span>。擅长将传统文化美学与现代设计语言融合，创造兼具商业价值与艺术感染力的视觉作品。</p>
+      <p>A visual designer specializing in <span class="highlight">brand identity</span>, <span class="highlight">poster design</span> and <span class="highlight">motion graphics</span>. I bridge traditional cultural aesthetics with contemporary design language, crafting visuals that balance commercial impact with artistic expression.</p>
+      <p>从茶品牌的新中式视觉体系，到电商大促的转化驱动设计，再到原创IP角色的全链路开发——每一个项目都是一次对视觉表达边界的探索。</p>
+    </div>
+    <div class="about-info reveal stagger-children">
+      <div class="about-info-item">
+        <div class="label">Location</div>
+        <div class="value">中国 / China</div>
+      </div>
+      <div class="about-info-item">
+        <div class="label">Experience</div>
+        <div class="value">广告公司 · 茶品牌 · 电商新媒体</div>
+      </div>
+      <div class="about-info-item">
+        <div class="label">Tools / 技能</div>
+        <div class="skills-list">
+          <span class="skill-tag">Photoshop</span>
+          <span class="skill-tag">Illustrator</span>
+          <span class="skill-tag">After Effects</span>
+          <span class="skill-tag">Premiere Pro</span>
+          <span class="skill-tag">CapCut</span>
+          <span class="skill-tag">Figma</span>
+        </div>
+      </div>
+      <div class="about-info-item">
+        <div class="label">Focus / 专注领域</div>
+        <div class="value">品牌设计 · 海报创意 · 动态视觉 · IP形象</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section works" id="works">
+  <div class="section-header reveal">
+    <div class="section-number">02</div>
+    <div class="section-title-group">
+      <div class="section-title">作品分类 / Categories</div>
+      <div class="section-title-en">Explore works by category</div>
+    </div>
+  </div>
+  <div class="works-grid reveal stagger-children">
+
+    <!-- 1. 茶企产品海报设计 -->
+    <div class="work-item" onclick="scrollToProject('project-tea')">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="frame"></div>
+      <div class="diag-line d1"></div><div class="diag-line d2"></div>
+      <div class="scanline"></div>
+      <div class="work-card-content">
+        <div class="work-card-num">01</div>
+        <div class="work-card-title">茶企产品海报设计</div>
+        <div class="work-card-title-en">Tea Brand Poster</div>
+        <div class="work-card-tag">Brand Identity</div>
+      </div>
+    </div>
+    <!-- 2. 节气动态海报设计 -->
+    <div class="work-item" onclick="scrollToProject('project-solar')">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="frame"></div>
+      <div class="diag-line d1"></div><div class="diag-line d2"></div>
+      <div class="scanline"></div>
+      <div class="work-card-content">
+        <div class="work-card-num">02</div>
+        <div class="work-card-title">节气动态海报设计</div>
+        <div class="work-card-title-en">Solar Terms Motion</div>
+        <div class="work-card-tag">Motion Poster</div>
+      </div>
+    </div>
+    <!-- 3. 物料设计 -->
+    <div class="work-item" onclick="scrollToProject('project-materials')">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="frame"></div>
+      <div class="diag-line d1"></div><div class="diag-line d2"></div>
+      <div class="scanline"></div>
+      <div class="work-card-content">
+        <div class="work-card-num">03</div>
+        <div class="work-card-title">物料设计</div>
+        <div class="work-card-title-en">Marketing Materials</div>
+        <div class="work-card-tag">Print &amp; Digital</div>
+      </div>
+    </div>
+    <!-- 4. 直播相关设计 -->
+    <div class="work-item" onclick="scrollToProject('project-livestream')">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="frame"></div>
+      <div class="diag-line d1"></div><div class="diag-line d2"></div>
+      <div class="scanline"></div>
+      <div class="work-card-content">
+        <div class="work-card-num">04</div>
+        <div class="work-card-title">直播相关设计</div>
+        <div class="work-card-title-en">Live Stream Design</div>
+        <div class="work-card-tag">Visual &amp; UI</div>
+      </div>
+    </div>
+    <!-- 5. 其他 -->
+    <div class="work-item" onclick="scrollToProject('project-more')">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="frame"></div>
+      <div class="diag-line d1"></div><div class="diag-line d2"></div>
+      <div class="scanline"></div>
+      <div class="work-card-content">
+        <div class="work-card-num">05</div>
+        <div class="work-card-title">其他</div>
+        <div class="work-card-title-en">More Works</div>
+        <div class="work-card-tag">Miscellaneous</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJECT 1: 茶企产品海报设计 (5-9.jpg) ═══ -->
+<section class="project-section" id="project-tea">
+  <div class="project-info-bar reveal">
+    <div>
+      <div class="project-name">茶企产品海报设计</div>
+      <div class="project-name-en">Tea Brand — Product Poster Design</div>
+    </div>
+    <div class="project-meta">
+      <div class="project-meta-item"><div class="meta-label">Category</div><div class="meta-value">品牌设计 / Brand Identity</div></div>
+      <div class="project-meta-item"><div class="meta-label">Scope</div><div class="meta-value">产品海报 / 产品摄影 / 文案</div></div>
+      <div class="project-meta-item"><div class="meta-label">Year</div><div class="meta-value">2024</div></div>
+    </div>
+  </div>
+  <div class="project-gallery reveal stagger-children">
+    <div class="gallery-item" onclick="openLightbox('5.jpg')"><img src="5.jpg" alt="茶品牌海报" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('6.jpg')"><img src="6.jpg" alt="茶品牌海报" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('7.jpg')"><img src="7.jpg" alt="茶品牌海报" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- ═══ PROJECT 2: 节气动态海报设计 (10-14.jpg) ═══ -->
+<section class="project-section" id="project-solar">
+  <div class="project-info-bar reveal">
+    <div>
+      <div class="project-name">节气动态海报设计</div>
+      <div class="project-name-en">Solar Terms — Animated Poster Design</div>
+    </div>
+    <div class="project-meta">
+      <div class="project-meta-item"><div class="meta-label">Category</div><div class="meta-value">动态海报 / Motion Poster</div></div>
+      <div class="project-meta-item"><div class="meta-label">Scope</div><div class="meta-value">插画设计 / 动态效果 / 品牌延展</div></div>
+      <div class="project-meta-item"><div class="meta-label">Year</div><div class="meta-value">2024</div></div>
+    </div>
+  </div>
+  <div class="project-gallery reveal stagger-children">
+    <div class="gallery-item" onclick="openLightbox('10.jpg')"><img src="10.jpg" alt="节气海报" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('11.jpg')"><img src="11.jpg" alt="节气海报" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('9.jpg')"><img src="9.jpg" alt="节气海报" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- ═══ PROJECT 3: 物料设计 (15-19.jpg) ═══ -->
+<section class="project-section" id="project-materials">
+  <div class="project-info-bar reveal">
+    <div>
+      <div class="project-name">物料设计</div>
+      <div class="project-name-en">Marketing Material Design</div>
+    </div>
+    <div class="project-meta">
+      <div class="project-meta-item"><div class="meta-label">Category</div><div class="meta-value">物料设计 / Marketing Materials</div></div>
+      <div class="project-meta-item"><div class="meta-label">Scope</div><div class="meta-value">宣传物料 / 包装设计 / 展示物料</div></div>
+    </div>
+  </div>
+  <div class="project-gallery reveal stagger-children">
+    <div class="gallery-item" onclick="openLightbox('13.jpg')"><img src="13.jpg" alt="物料设计" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('14.jpg')"><img src="14.jpg" alt="物料设计" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- ═══ PROJECT 4: 直播相关设计 (16-32.jpg) ═══ -->
+<section class="project-section" id="project-livestream">
+  <div class="project-info-bar reveal">
+    <div>
+      <div class="project-name">直播相关设计</div>
+      <div class="project-name-en">Live Streaming — Visual Design</div>
+    </div>
+    <div class="project-meta">
+      <div class="project-meta-item"><div class="meta-label">Category</div><div class="meta-value">直播设计 / Live Stream Design</div></div>
+      <div class="project-meta-item"><div class="meta-label">Scope</div><div class="meta-value">直播间贴片 / 活动海报 / 短视频封面</div></div>
+    </div>
+  </div>
+  <div class="livestream-grid reveal stagger-children">
+    <div class="livestream-item" onclick="openLightbox('16.jpg')"><img src="16.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>16</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('17.jpg')"><img src="17.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>17</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('18.jpg')"><img src="18.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>18</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('19.jpg')"><img src="19.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>19</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('20.jpg')"><img src="20.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>20</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('21.jpg')"><img src="21.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>21</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('22.jpg')"><img src="22.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>22</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('23.jpg')"><img src="23.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>23</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('24.jpg')"><img src="24.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>24</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('25.jpg')"><img src="25.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>25</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('26.jpg')"><img src="26.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>26</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('27.jpg')"><img src="27.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>27</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('28.jpg')"><img src="28.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>28</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('29.jpg')"><img src="29.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>29</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('30.jpg')"><img src="30.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>30</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('31.jpg')"><img src="31.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>31</span></div></div>
+    <div class="livestream-item" onclick="openLightbox('32.jpg')"><img src="32.jpg" alt="直播设计" loading="lazy"><div class="ls-overlay"><span>32</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ PROJECT 5: 其他 (35-43.jpg) ═══ -->
+<section class="project-section" id="project-more">
+  <div class="project-info-bar reveal">
+    <div>
+      <div class="project-name">其他</div>
+      <div class="project-name-en">Others — Explore More Works</div>
+    </div>
+    <div class="project-meta">
+      <div class="project-meta-item"><div class="meta-label">Category</div><div class="meta-value">综合 / Miscellaneous</div></div>
+    </div>
+  </div>
+  <div class="project-gallery reveal stagger-children">
+    <div class="gallery-item" onclick="openLightbox('35.jpg')"><img src="35.jpg" alt="作品" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('36.jpg')"><img src="36.jpg" alt="作品" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('37.jpg')"><img src="37.jpg" alt="作品" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('38.jpg')"><img src="38.jpg" alt="作品" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('39.jpg')"><img src="39.jpg" alt="作品" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('40.jpg')"><img src="40.jpg" alt="作品" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('41.jpg')"><img src="41.jpg" alt="作品" loading="lazy"></div>
+    <div class="gallery-item" onclick="openLightbox('42.jpg')"><img src="42.jpg" alt="作品" loading="lazy"></div>
+  </div>
+</section>
+
+<section class="section contact" id="contact">
+  <div class="reveal">
+    <div class="contact-label">Let's Create Together</div>
+    <div class="contact-heading">期待与你合作</div>
+    <div class="contact-heading-en">Looking forward to creating something amazing together</div>
+    <div class="contact-info" style="display:flex;flex-direction:column;gap:20px;align-items:center;">
+      <a href="tel:17388658895" class="contact-cta">
+        <span>电话 / Phone: 17388658895</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+      </a>
+      <a href="mailto:1747815396@qq.com" class="contact-cta">
+        <span>邮箱 / Email: 1747815396@qq.com</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-left">&copy; 2026 Evan Pan. All Rights Reserved.</div>
+
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    document.getElementById('preloader').classList.add('hidden');
+  }, 2200);
+});
+
+var dot = document.getElementById('cursorDot');
+var ring = document.getElementById('cursorRing');
+var mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', function(e) {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  dot.style.left = mouseX - 3 + 'px';
+  dot.style.top = mouseY - 3 + 'px';
+});
+
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  ring.style.transform = 'translate(' + (ringX - 18) + 'px, ' + (ringY - 18) + 'px)';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button, .work-item, .gallery-item, .skill-tag, .livestream-item').forEach(function(el) {
+  el.addEventListener('mouseenter', function() { ring.classList.add('hover'); });
+  el.addEventListener('mouseleave', function() { ring.classList.remove('hover'); });
+});
+
+document.addEventListener('mousedown', function() {
+  dot.classList.add('click');
+  ring.classList.add('click');
+});
+document.addEventListener('mouseup', function() {
+  dot.classList.remove('click');
+  ring.classList.remove('click');
+});
+
+var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+var revealObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+revealElements.forEach(function(el) { revealObserver.observe(el); });
+
+// Timeline items stagger reveal
+var timelineItems = document.querySelectorAll('.timeline-item');
+timelineItems.forEach(function(el) { el.classList.add('hidden'); });
+var timelineObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.remove('hidden');
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+timelineItems.forEach(function(el) { timelineObserver.observe(el); });
+
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+function toggleMobileNav() {
+  document.getElementById('navToggle').classList.toggle('active');
+  document.getElementById('mobileNav').classList.toggle('active');
+  document.body.style.overflow = document.getElementById('mobileNav').classList.contains('active') ? 'hidden' : '';
+}
+function closeMobileNav() {
+  document.getElementById('navToggle').classList.remove('active');
+  document.getElementById('mobileNav').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function scrollToProject(id) {
+  var el = document.getElementById(id);
+  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+}
+
+// Livestream grid 3D tilt effect
+document.querySelectorAll('.livestream-item').forEach(function(card) {
+  card.addEventListener('mousemove', function(e) {
+    var rect = card.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var centerX = rect.width / 2;
+    var centerY = rect.height / 2;
+    var rotateX = (y - centerY) / centerY * -8;
+    var rotateY = (x - centerX) / centerX * 8;
+    card.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.03)';
+  });
+  card.addEventListener('mouseleave', function() {
+    card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+  });
+});
+
+// Hero name glitch effect
+var heroName = document.getElementById('heroName');
+if (heroName) {
+  var glitchTimer = null;
+  heroName.addEventListener('mouseenter', function() {
+    triggerGlitch();
+    glitchTimer = setInterval(triggerGlitch, 800);
+  });
+  heroName.addEventListener('mouseleave', function() {
+    clearInterval(glitchTimer);
+    heroName.classList.remove('glitch');
+  });
+
+  function triggerGlitch() {
+    heroName.classList.remove('glitch');
+    void heroName.offsetWidth;
+    heroName.classList.add('glitch');
+    var chars = heroName.querySelectorAll('.char');
+    chars.forEach(function(ch) {
+      var rx = (Math.random() - 0.5) * 6;
+      var ry = (Math.random() - 0.5) * 4;
+      ch.style.transform = 'translate(' + rx + 'px, ' + ry + 'px)';
+    });
+    setTimeout(function() {
+      chars.forEach(function(ch) {
+        ch.style.transform = 'translate(0, 0)';
+      });
+    }, 200);
+  }
+}
+
+window.addEventListener('scroll', function() {
+  var scrolled = window.pageYOffset;
+  var hero = document.querySelector('.hero-content');
+  if (hero && scrolled < window.innerHeight) {
+    hero.style.transform = 'translateY(' + (scrolled * 0.3) + 'px)';
+    hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.8;
+  }
+});
+</script>
+
+</body>
+</html>
